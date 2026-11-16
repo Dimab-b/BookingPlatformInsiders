@@ -1,5 +1,9 @@
+using BookingPlatformInsiders.Application.Bookings;
 using BookingPlatformInsiders.Application.Common.Persistence;
+using BookingPlatformInsiders.Application.Rooms;
+using BookingPlatformInsiders.Infrastructure.Bookings;
 using BookingPlatformInsiders.Infrastructure.Persistence;
+using BookingPlatformInsiders.Infrastructure.Rooms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +21,8 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AppDbContext>());
+        services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
 
         return services;
     }
