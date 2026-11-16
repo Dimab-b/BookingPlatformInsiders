@@ -1,7 +1,9 @@
+using BookingPlatformInsiders.Application.Common.Exceptions;
 using BookingPlatformInsiders.Application.Common.Persistence;
 using BookingPlatformInsiders.Domain.Bookings;
 using BookingPlatformInsiders.Domain.Rooms;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace BookingPlatformInsiders.Infrastructure.Persistence;
 
@@ -21,9 +23,24 @@ internal sealed class AppDbContext : DbContext, IUnitOfWork
         base.OnModelCreating(modelBuilder);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return base.SaveChangesAsync(cancellationToken);
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new ConcurrencyConflictException();
+        }
+        catch (DbUpdateException exception)
+            when (exception.InnerException is PostgresException
+            {
+                SqlState: PostgresErrorCodes.ExclusionViolation
+            })
+        {
+            throw new BookingOverlapException();
+        }
     }
 
     public async Task<T> ExecuteInTransactionAsync<T>(

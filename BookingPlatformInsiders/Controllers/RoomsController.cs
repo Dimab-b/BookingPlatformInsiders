@@ -43,18 +43,6 @@ public sealed class RoomsController : ControllerBase
             new GetRoomScheduleQuery(roomId, date, pageNumber, pageSize),
             cancellationToken);
 
-        if (result is null)
-        {
-            var problem = new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Room not found."
-            };
-            problem.Extensions["code"] = "room.not_found";
-
-            return NotFound(problem);
-        }
-
         return Ok(result);
     }
 }

@@ -15,4 +15,8 @@ public static class ErrorCodes
     public const string BookingSlotTaken = "booking.slot_taken";
     public const string BookingCannotCancel = "booking.cannot_cancel";
     public const string BookingCannotComplete = "booking.cannot_complete";
+
+    public const string RoomNotFound = "room.not_found";
+    public const string BookingNotFound = "booking.not_found";
+    public const string ConcurrencyConflict = "concurrency.conflict";
 }

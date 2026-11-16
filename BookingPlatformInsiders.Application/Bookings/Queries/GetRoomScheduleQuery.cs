@@ -1,5 +1,6 @@
 using BookingPlatformInsiders.Application.Bookings;
 using BookingPlatformInsiders.Application.Bookings.Dtos;
+using BookingPlatformInsiders.Application.Common.Exceptions;
 using BookingPlatformInsiders.Application.Common.Pagination;
 using BookingPlatformInsiders.Application.Rooms;
 using MediatR;
@@ -10,10 +11,10 @@ public sealed record GetRoomScheduleQuery(
     Guid RoomId,
     DateOnly Date,
     int PageNumber = 1,
-    int PageSize = 50) : IRequest<PagedResult<BookingDto>?>;
+    int PageSize = 50) : IRequest<PagedResult<BookingDto>>;
 
 public sealed class GetRoomScheduleQueryHandler
-    : IRequestHandler<GetRoomScheduleQuery, PagedResult<BookingDto>?>
+    : IRequestHandler<GetRoomScheduleQuery, PagedResult<BookingDto>>
 {
     private readonly IBookingQueries _bookingQueries;
     private readonly IRoomRepository _roomRepository;
@@ -26,7 +27,7 @@ public sealed class GetRoomScheduleQueryHandler
         _roomRepository = roomRepository;
     }
 
-    public async Task<PagedResult<BookingDto>?> Handle(
+    public async Task<PagedResult<BookingDto>> Handle(
         GetRoomScheduleQuery query,
         CancellationToken cancellationToken)
     {
@@ -36,7 +37,7 @@ public sealed class GetRoomScheduleQueryHandler
 
         if (!roomExists)
         {
-            return null;
+            throw new RoomNotFoundException();
         }
 
         var dayStartUtc = query.Date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
