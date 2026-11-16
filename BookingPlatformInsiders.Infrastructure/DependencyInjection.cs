@@ -1,4 +1,5 @@
 using BookingPlatformInsiders.Application.Bookings;
+using BookingPlatformInsiders.Application.Common.Data;
 using BookingPlatformInsiders.Application.Common.Persistence;
 using BookingPlatformInsiders.Application.Common.Time;
 using BookingPlatformInsiders.Application.Rooms;
@@ -25,8 +26,10 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddSingleton<IDbConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IRoomQueries, RoomQueries>();
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddSingleton<IClock, SystemClock>();
 
