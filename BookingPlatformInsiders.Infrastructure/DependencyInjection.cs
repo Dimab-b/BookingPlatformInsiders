@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IRoomQueries, RoomQueries>();
         services.AddScoped<IBookingRepository, BookingRepository>();
+        services.AddScoped<IBookingQueries, BookingQueries>();
         services.AddSingleton<IClock, SystemClock>();
 
         services.AddHostedService<RoomSeeder>();
