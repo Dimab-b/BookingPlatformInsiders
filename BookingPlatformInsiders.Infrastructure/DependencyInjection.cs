@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IBookingQueries, BookingQueries>();
         services.AddSingleton<IClock, SystemClock>();
 
+        services.AddHostedService<DatabaseInitializer>();
         services.AddHostedService<RoomSeeder>();
         AddHangfire(services, configuration, connectionString);
 
