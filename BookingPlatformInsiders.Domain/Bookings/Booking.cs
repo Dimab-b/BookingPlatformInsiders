@@ -113,9 +113,4 @@ public sealed class Booking : Entity, IAggregateRoot
 
         Status = BookingStatus.Completed;
     }
-
-    public override bool Equals(object? obj) =>
-        obj is Booking other && Id == other.Id;
-
-    public override int GetHashCode() => Id.GetHashCode();
 }
