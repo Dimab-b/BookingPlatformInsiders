@@ -1,3 +1,20 @@
+export interface UserDto {
+  id: string;
+  email: string;
+  role: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  expiresInSeconds: number;
+  user: UserDto;
+}
+
+export interface CredentialsRequest {
+  email: string;
+  password: string;
+}
+
 export interface RoomDto {
   id: string;
   name: string;
@@ -13,6 +30,7 @@ export interface BookingDto {
   startUtc: string;
   endUtc: string;
   status: string;
+  isOwnedByCurrentUser: boolean;
 }
 
 export interface PagedResult<T> {
