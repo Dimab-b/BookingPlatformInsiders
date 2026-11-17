@@ -30,6 +30,9 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                     b.Property<DateTime>("EndUtc")
                         .HasColumnType("timestamptz");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 
@@ -53,6 +56,8 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                         .HasColumnName("xmin");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("Status", "EndUtc");
 
@@ -96,11 +101,118 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BookingPlatformInsiders.Domain.Users.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ReplacedByTokenId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("RevokedAtUtc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAtUtc");
+
+                    b.HasIndex("ReplacedByTokenId");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("FamilyId", "RevokedAtUtc");
+
+                    b.HasIndex("UserId", "RevokedAtUtc");
+
+                    b.ToTable("RefreshTokens", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_RefreshTokens_Expiry", "\"ExpiresAtUtc\" > \"CreatedAtUtc\"");
+                        });
+                });
+
+            modelBuilder.Entity("BookingPlatformInsiders.Domain.Users.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Users_Role", "\"Role\" IN ('User', 'Admin')");
+                        });
+                });
+
             modelBuilder.Entity("BookingPlatformInsiders.Domain.Bookings.Booking", b =>
                 {
+                    b.HasOne("BookingPlatformInsiders.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BookingPlatformInsiders.Domain.Rooms.Room", null)
                         .WithMany()
                         .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BookingPlatformInsiders.Domain.Users.RefreshToken", b =>
+                {
+                    b.HasOne("BookingPlatformInsiders.Domain.Users.RefreshToken", null)
+                        .WithMany()
+                        .HasForeignKey("ReplacedByTokenId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BookingPlatformInsiders.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
