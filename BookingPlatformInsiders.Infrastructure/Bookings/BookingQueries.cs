@@ -9,7 +9,7 @@ internal sealed class BookingQueries : IBookingQueries
 {
     private const string WhereClause = """
         "RoomId" = @RoomId
-        AND "Status" <> 'Cancelled'
+        AND "Status" IN ('Scheduled', 'PendingPayment', 'Completed')
         AND "StartUtc" < @DayEndUtc
         AND "EndUtc" > @DayStartUtc
         """;
