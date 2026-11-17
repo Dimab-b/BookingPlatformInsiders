@@ -5,4 +5,5 @@ public sealed record RoomDto(
     string Name,
     int Capacity,
     string Location,
-    string? Description);
+    string? Description,
+    bool IsPaid);

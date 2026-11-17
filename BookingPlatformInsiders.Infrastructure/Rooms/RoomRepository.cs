@@ -1,4 +1,5 @@
 using BookingPlatformInsiders.Application.Rooms;
+using BookingPlatformInsiders.Domain.Rooms;
 using BookingPlatformInsiders.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,13 @@ internal sealed class RoomRepository : IRoomRepository
     public RoomRepository(AppDbContext context)
     {
         _context = context;
+    }
+
+    public Task<Room?> GetByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
+    {
+        return _context.Rooms
+            .AsNoTracking()
+            .FirstOrDefaultAsync(room => room.Id == roomId, cancellationToken);
     }
 
     public Task<bool> ExistsAsync(Guid roomId, CancellationToken cancellationToken = default)

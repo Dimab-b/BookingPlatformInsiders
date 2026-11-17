@@ -29,5 +29,8 @@ internal sealed class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.Property(room => room.Description)
             .HasMaxLength(Room.MaxDescriptionLength);
+
+        builder.Property(room => room.IsPaid)
+            .IsRequired();
     }
 }

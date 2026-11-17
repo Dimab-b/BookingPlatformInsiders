@@ -14,6 +14,7 @@ public sealed class Room : Entity, IAggregateRoot
     public int Capacity { get; private set; }
     public string Location { get; private set; }
     public string? Description { get; private set; }
+    public bool IsPaid { get; private set; }
 
     private Room()
     {
@@ -21,16 +22,28 @@ public sealed class Room : Entity, IAggregateRoot
         Location = null!;
     }
 
-    private Room(Guid id, RoomName name, int capacity, string location, string? description)
+    private Room(
+        Guid id,
+        RoomName name,
+        int capacity,
+        string location,
+        string? description,
+        bool isPaid)
     {
         Id = id;
         Name = name;
         Capacity = capacity;
         Location = location;
         Description = description;
+        IsPaid = isPaid;
     }
 
-    public static Room Create(RoomName name, int capacity, string location, string? description = null)
+    public static Room Create(
+        RoomName name,
+        int capacity,
+        string location,
+        string? description = null,
+        bool isPaid = false)
     {
         if (capacity < MinCapacity || capacity > MaxCapacity)
         {
@@ -38,7 +51,13 @@ public sealed class Room : Entity, IAggregateRoot
         }
 
 
-        return new Room(Guid.NewGuid(), name, capacity, NormalizeLocation(location), NormalizeDescription(description));
+        return new Room(
+            Guid.NewGuid(),
+            name,
+            capacity,
+            NormalizeLocation(location),
+            NormalizeDescription(description),
+            isPaid);
     }
 
     public void Rename(RoomName name)
