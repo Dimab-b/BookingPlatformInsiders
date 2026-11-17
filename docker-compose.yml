@@ -24,6 +24,13 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
       Database__MigrateOnStartup: "true"
+      Jwt__Issuer: ${JWT__ISSUER}
+      Jwt__Audience: ${JWT__AUDIENCE}
+      Jwt__SigningKey: ${JWT__SIGNINGKEY}
+      Auth__RefreshCookieName: ${AUTH__REFRESHCOOKIENAME}
+      Auth__RefreshCookiePath: ${AUTH__REFRESHCOOKIEPATH}
+      Auth__RequireSecureCookies: ${AUTH__REQUIRESECURECOOKIES}
+      Auth__RefreshCookieSameSite: ${AUTH__REFRESHCOOKIESAMESITE}
     ports:
       - "${API_PORT}:8080"
     depends_on:
