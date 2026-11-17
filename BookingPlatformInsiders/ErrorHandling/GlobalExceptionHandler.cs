@@ -1,7 +1,9 @@
 using BookingPlatformInsiders.Application.Auth;
 using BookingPlatformInsiders.Application.Common.Exceptions;
+using BookingPlatformInsiders.Application.Payments;
 using BookingPlatformInsiders.Domain.Bookings;
 using BookingPlatformInsiders.Domain.Common.Exceptions;
+using BookingPlatformInsiders.Domain.Payments;
 using BookingPlatformInsiders.Domain.Users;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
@@ -108,6 +110,22 @@ internal sealed class GlobalExceptionHandler : IExceptionHandler
                 (StatusCodes.Status401Unauthorized, useCaseException.Code, useCaseException.Message),
             RefreshTokenExpiredException domainException =>
                 (StatusCodes.Status401Unauthorized, domainException.Code, domainException.Message),
+            PaymentNotFoundException useCaseException =>
+                (StatusCodes.Status404NotFound, useCaseException.Code, useCaseException.Message),
+            PaymentAttemptsExceededException useCaseException =>
+                (StatusCodes.Status409Conflict, useCaseException.Code, useCaseException.Message),
+            PaymentNotPendingException useCaseException =>
+                (StatusCodes.Status409Conflict, useCaseException.Code, useCaseException.Message),
+            PaymentExpiredException useCaseException =>
+                (StatusCodes.Status409Conflict, useCaseException.Code, useCaseException.Message),
+            RatesUnavailableException useCaseException =>
+                (StatusCodes.Status503ServiceUnavailable, useCaseException.Code, useCaseException.Message),
+            IdempotencyKeyReusedException useCaseException =>
+                (StatusCodes.Status409Conflict, useCaseException.Code, useCaseException.Message),
+            InvalidPaymentWebhookException useCaseException =>
+                (StatusCodes.Status400BadRequest, useCaseException.Code, useCaseException.Message),
+            InvalidPaymentStateException domainException =>
+                (StatusCodes.Status409Conflict, domainException.Code, domainException.Message),
             BookingStartInPastException domainException =>
                 (StatusCodes.Status400BadRequest, domainException.Code, domainException.Message),
             DomainException domainException =>

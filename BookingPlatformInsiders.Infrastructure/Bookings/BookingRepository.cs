@@ -24,6 +24,19 @@ internal sealed class BookingRepository : IBookingRepository
         return _context.Bookings.FirstOrDefaultAsync(booking => booking.Id == id, cancellationToken);
     }
 
+    public Task<Booking?> GetByClientRequestIdAsync(
+        Guid ownerId,
+        string clientRequestId,
+        CancellationToken cancellationToken = default)
+    {
+        return _context.Bookings
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                booking => booking.OwnerId == ownerId
+                    && booking.ClientRequestId == clientRequestId,
+                cancellationToken);
+    }
+
     public async Task<IReadOnlyList<Booking>> GetOverlapCandidatesAsync(
         Guid roomId,
         DateTime startUtc,
@@ -34,7 +47,9 @@ internal sealed class BookingRepository : IBookingRepository
             .AsNoTracking()
             .Where(booking =>
                 booking.RoomId == roomId
-                && booking.Status != BookingStatus.Cancelled
+                && (booking.Status == BookingStatus.Scheduled
+                    || booking.Status == BookingStatus.PendingPayment
+                    || booking.Status == BookingStatus.Completed)
                 && booking.StartUtc < endUtc
                 && booking.EndUtc > startUtc)
             .ToListAsync(cancellationToken);

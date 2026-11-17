@@ -8,6 +8,11 @@ public interface IBookingRepository
 
     Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<Booking?> GetByClientRequestIdAsync(
+        Guid ownerId,
+        string clientRequestId,
+        CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<Booking>> GetOverlapCandidatesAsync(
         Guid roomId,
         DateTime startUtc,

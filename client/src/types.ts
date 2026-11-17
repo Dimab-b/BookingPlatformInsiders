@@ -32,6 +32,10 @@ export interface BookingDto {
   endUtc: string;
   status: string;
   isOwnedByCurrentUser: boolean;
+  amountOriginal: number | null;
+  currency: string | null;
+  amountEur: number | null;
+  paymentExpiresAtUtc: string | null;
 }
 
 export interface PagedResult<T> {

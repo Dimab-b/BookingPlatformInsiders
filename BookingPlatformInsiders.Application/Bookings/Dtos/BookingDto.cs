@@ -7,4 +7,8 @@ public sealed record BookingDto(
     DateTime StartUtc,
     DateTime EndUtc,
     string Status,
-    bool IsOwnedByCurrentUser);
+    bool IsOwnedByCurrentUser,
+    decimal? AmountOriginal,
+    string? Currency,
+    decimal? AmountEur,
+    DateTime? PaymentExpiresAtUtc);

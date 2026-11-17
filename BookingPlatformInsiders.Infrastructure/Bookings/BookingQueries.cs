@@ -22,7 +22,8 @@ internal sealed class BookingQueries : IBookingQueries
 
     private const string ItemsSql = $"""
         SELECT "Id", "RoomId", "Title", "StartUtc", "EndUtc", "Status",
-               ("OwnerId" = @CurrentUserId) AS "IsOwnedByCurrentUser"
+               ("OwnerId" = @CurrentUserId) AS "IsOwnedByCurrentUser",
+               "AmountOriginal", "Currency", "AmountEur", "PaymentExpiresAtUtc"
         FROM "Bookings"
         WHERE {WhereClause}
         ORDER BY "StartUtc", "Id"
