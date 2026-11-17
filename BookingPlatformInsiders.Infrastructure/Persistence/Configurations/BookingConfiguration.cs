@@ -1,5 +1,6 @@
 using BookingPlatformInsiders.Domain.Bookings;
 using BookingPlatformInsiders.Domain.Rooms;
+using BookingPlatformInsiders.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -45,6 +46,12 @@ internal sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .HasForeignKey(booking => booking.RoomId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(booking => booking.OwnerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(booking => booking.OwnerId);
         builder.HasIndex(booking => new { booking.RoomId, booking.StartUtc, booking.EndUtc });
         builder.HasIndex(booking => new { booking.Status, booking.EndUtc });
     }
