@@ -205,14 +205,24 @@ branch on `code`, not on the title text.
 | `BackgroundJobs:AutoComplete:BatchSize` | Rows per batch | `100` |
 | `BackgroundJobs:AutoComplete:MaxBatches` | Max batches per run | `10` |
 | `Cors:AllowedOrigins` | Allowed frontend origins | `http://localhost:5173` |
+| `Jwt:Issuer` | JWT issuer | `BookingPlatformInsiders` |
+| `Jwt:Audience` | JWT audience | `BookingPlatformInsiders.Client` |
+| `Jwt:AccessTokenMinutes` | Access-token lifetime | `15` |
+| `Jwt:RefreshTokenDays` | Refresh-token lifetime | `7` |
+| `Jwt:SigningKey` | HS256 signing key (32+ bytes, **secret only**) | — |
+| `Auth:RefreshCookieName` | Refresh-token cookie name | `refresh_token` |
+| `Auth:RefreshCookiePath` | Cookie path scope | `/api/auth` |
+| `Auth:RequireSecureCookies` | Set the `Secure` cookie flag | `false` locally, `true` in production |
+| `Auth:RefreshCookieSameSite` | Cookie `SameSite` mode | `Lax` |
 | `VITE_API_URL` (client) | API base URL | `http://localhost:5178` |
 
 Secrets are never committed:
 
-- locally: .NET User Secrets for `ConnectionStrings:DefaultConnection`;
+- locally: .NET User Secrets for `ConnectionStrings:DefaultConnection` and
+  `Jwt:SigningKey`;
 - Docker Compose: `.env` (git-ignored, template in `.env.example`);
 - environment variables use the `__` separator, e.g.
-  `ConnectionStrings__DefaultConnection`.
+  `ConnectionStrings__DefaultConnection`, `Jwt__SigningKey`.
 
 ## Running with Docker Compose (recommended)
 

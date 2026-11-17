@@ -19,6 +19,14 @@ public sealed class InvalidBookingRoomException : DomainException
     }
 }
 
+public sealed class InvalidBookingOwnerException : DomainException
+{
+    public InvalidBookingOwnerException()
+        : base(ErrorCodes.BookingOwnerInvalid, "Booking owner is required.")
+    {
+    }
+}
+
 public sealed class InvalidBookingTimeRangeException : DomainException
 {
     public InvalidBookingTimeRangeException()

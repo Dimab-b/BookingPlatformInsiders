@@ -5,6 +5,7 @@ namespace BookingPlatformInsiders.Domain.Bookings;
 public sealed class Booking : Entity, IAggregateRoot
 {
     public Guid Id { get; private set; }
+    public Guid OwnerId { get; private set; }
     public Guid RoomId { get; private set; }
     public BookingTitle Title { get; private set; }
     public DateTime StartUtc { get; private set; }
@@ -16,9 +17,10 @@ public sealed class Booking : Entity, IAggregateRoot
         Title = null!;
     }
 
-    private Booking(Guid id, Guid roomId, BookingTitle title, DateTime startUtc, DateTime endUtc)
+    private Booking(Guid id, Guid ownerId, Guid roomId, BookingTitle title, DateTime startUtc, DateTime endUtc)
     {
         Id = id;
+        OwnerId = ownerId;
         RoomId = roomId;
         Title = title;
         StartUtc = startUtc;
@@ -27,12 +29,18 @@ public sealed class Booking : Entity, IAggregateRoot
     }
 
     public static Booking Create(
+        Guid ownerId,
         Guid roomId,
         BookingTitle title,
         DateTime startUtc,
         DateTime endUtc,
         DateTime nowUtc)
     {
+        if (ownerId == Guid.Empty)
+        {
+            throw new InvalidBookingOwnerException();
+        }
+
         if (roomId == Guid.Empty)
         {
             throw new InvalidBookingRoomException();
@@ -58,7 +66,7 @@ public sealed class Booking : Entity, IAggregateRoot
             throw new BookingStartInPastException();
         }
 
-        return new Booking(Guid.NewGuid(), roomId, title, startUtc, endUtc);
+        return new Booking(Guid.NewGuid(), ownerId, roomId, title, startUtc, endUtc);
     }
 
     public bool OverlapsWith(Guid roomId, DateTime startUtc, DateTime endUtc) =>
