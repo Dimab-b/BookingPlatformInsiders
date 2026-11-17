@@ -32,4 +32,12 @@ public static class ErrorCodes
 
     public const string BookingOwnerInvalid = "booking.owner_invalid";
     public const string BookingNotOwned = "booking.not_owned";
+    public const string BookingPriceInvalid = "booking.price_invalid";
+    public const string BookingCurrencyInvalid = "booking.currency_invalid";
+    public const string BookingExchangeRateInvalid = "booking.exchange_rate_invalid";
+    public const string BookingRateProviderInvalid = "booking.rate_provider_invalid";
+    public const string BookingRateCapturedAtInvalid = "booking.rate_captured_at_invalid";
+    public const string BookingPaymentExpiryInvalid = "booking.payment_expiry_invalid";
+    public const string BookingClientRequestInvalid = "booking.client_request_invalid";
+    public const string BookingNotPendingPayment = "booking.not_pending_payment";
 }
