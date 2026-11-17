@@ -6,4 +6,5 @@ public sealed record BookingDto(
     string Title,
     DateTime StartUtc,
     DateTime EndUtc,
-    string Status);
+    string Status,
+    bool IsOwnedByCurrentUser);

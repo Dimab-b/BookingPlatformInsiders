@@ -6,6 +6,7 @@ public interface IBookingQueries
 {
     Task<(IReadOnlyList<BookingDto> Items, int TotalCount)> GetSchedulePageAsync(
         Guid roomId,
+        Guid currentUserId,
         DateTime dayStartUtc,
         DateTime dayEndUtc,
         int offset,

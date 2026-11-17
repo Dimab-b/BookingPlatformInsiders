@@ -36,3 +36,11 @@ public sealed class ConcurrencyConflictException : UseCaseException
     {
     }
 }
+
+public sealed class BookingNotOwnedException : UseCaseException
+{
+    public BookingNotOwnedException()
+        : base(ErrorCodes.BookingNotOwned, "You are not allowed to modify this booking.")
+    {
+    }
+}

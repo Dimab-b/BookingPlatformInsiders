@@ -21,7 +21,8 @@ internal sealed class BookingQueries : IBookingQueries
         """;
 
     private const string ItemsSql = $"""
-        SELECT "Id", "RoomId", "Title", "StartUtc", "EndUtc", "Status"
+        SELECT "Id", "RoomId", "Title", "StartUtc", "EndUtc", "Status",
+               ("OwnerId" = @CurrentUserId) AS "IsOwnedByCurrentUser"
         FROM "Bookings"
         WHERE {WhereClause}
         ORDER BY "StartUtc", "Id"
@@ -37,6 +38,7 @@ internal sealed class BookingQueries : IBookingQueries
 
     public async Task<(IReadOnlyList<BookingDto> Items, int TotalCount)> GetSchedulePageAsync(
         Guid roomId,
+        Guid currentUserId,
         DateTime dayStartUtc,
         DateTime dayEndUtc,
         int offset,
@@ -48,7 +50,7 @@ internal sealed class BookingQueries : IBookingQueries
         var totalCount = await connection.ExecuteScalarAsync<long>(
             new CommandDefinition(
                 CountSql,
-                new { RoomId = roomId, DayStartUtc = dayStartUtc, DayEndUtc = dayEndUtc },
+                new { RoomId = roomId, CurrentUserId = currentUserId, DayStartUtc = dayStartUtc, DayEndUtc = dayEndUtc },
                 cancellationToken: cancellationToken));
 
         if (totalCount == 0)
@@ -62,6 +64,7 @@ internal sealed class BookingQueries : IBookingQueries
                 new
                 {
                     RoomId = roomId,
+                    CurrentUserId = currentUserId,
                     DayStartUtc = dayStartUtc,
                     DayEndUtc = dayEndUtc,
                     Limit = limit,
