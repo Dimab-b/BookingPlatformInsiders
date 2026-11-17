@@ -21,6 +21,7 @@ export interface RoomDto {
   capacity: number;
   location: string;
   description: string | null;
+  isPaid: boolean;
 }
 
 export interface BookingDto {

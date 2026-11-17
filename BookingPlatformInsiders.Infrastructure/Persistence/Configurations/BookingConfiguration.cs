@@ -26,6 +26,43 @@ internal sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .HasMaxLength(BookingTitle.MaxLength)
             .IsRequired();
 
+        builder.OwnsOne(booking => booking.Price, price =>
+        {
+            price.Property(value => value.AmountOriginal)
+                .HasColumnName("AmountOriginal")
+                .HasColumnType("numeric(18,2)");
+
+            price.Property(value => value.Currency)
+                .HasColumnName("Currency")
+                .HasMaxLength(3);
+
+            price.Property(value => value.AmountEur)
+                .HasColumnName("AmountEur")
+                .HasColumnType("numeric(18,2)");
+
+            price.Property(value => value.ExchangeRate)
+                .HasColumnName("ExchangeRate")
+                .HasColumnType("numeric(18,8)");
+
+            price.Property(value => value.RateProvider)
+                .HasColumnName("RateProvider")
+                .HasMaxLength(BookingPrice.MaxRateProviderLength);
+
+            price.Property(value => value.RateCapturedAtUtc)
+                .HasColumnName("RateCapturedAtUtc")
+                .HasColumnType("timestamptz");
+        });
+
+        builder.Property(booking => booking.PaymentExpiresAtUtc)
+            .HasColumnType("timestamptz");
+
+        builder.Property(booking => booking.ClientRequestId)
+            .HasMaxLength(Booking.MaxClientRequestIdLength);
+
+        builder.HasIndex(booking => new { booking.OwnerId, booking.ClientRequestId })
+            .IsUnique()
+            .HasFilter("\"ClientRequestId\" IS NOT NULL");
+
         builder.Property(booking => booking.StartUtc)
             .HasColumnType("timestamptz")
             .IsRequired();

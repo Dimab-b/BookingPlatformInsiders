@@ -38,7 +38,7 @@ internal sealed class RoomSeeder : IHostedService
                 continue;
             }
 
-            var room = Room.Create(name, seed.Capacity, seed.Location, seed.Description);
+            var room = Room.Create(name, seed.Capacity, seed.Location, seed.Description, seed.IsPaid);
 
             await context.Rooms.AddAsync(room, cancellationToken);
             added++;

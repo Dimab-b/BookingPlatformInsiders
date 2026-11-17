@@ -25,7 +25,7 @@ internal sealed class RoomQueries : IRoomQueries
             """;
 
         const string itemsSql = """
-            SELECT "Id", "Name", "Capacity", "Location", "Description"
+            SELECT "Id", "Name", "Capacity", "Location", "Description", "IsPaid"
             FROM "Rooms"
             ORDER BY lower("Name"), "Id"
             LIMIT @Limit OFFSET @Offset;

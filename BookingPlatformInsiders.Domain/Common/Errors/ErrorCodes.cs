@@ -40,4 +40,7 @@ public static class ErrorCodes
     public const string BookingPaymentExpiryInvalid = "booking.payment_expiry_invalid";
     public const string BookingClientRequestInvalid = "booking.client_request_invalid";
     public const string BookingNotPendingPayment = "booking.not_pending_payment";
+
+    public const string PaymentInvalid = "payment.invalid";
+    public const string PaymentInvalidState = "payment.invalid_state";
 }

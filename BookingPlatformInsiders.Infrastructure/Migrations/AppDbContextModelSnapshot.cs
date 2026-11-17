@@ -27,11 +27,18 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ClientRequestId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<DateTime>("EndUtc")
                         .HasColumnType("timestamptz");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("PaymentExpiresAtUtc")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
@@ -59,6 +66,10 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
+                    b.HasIndex("OwnerId", "ClientRequestId")
+                        .IsUnique()
+                        .HasFilter("\"ClientRequestId\" IS NOT NULL");
+
                     b.HasIndex("Status", "EndUtc");
 
                     b.HasIndex("RoomId", "StartUtc", "EndUtc");
@@ -82,6 +93,9 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -201,6 +215,49 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.OwnsOne("BookingPlatformInsiders.Domain.Bookings.BookingPrice", "Price", b1 =>
+                        {
+                            b1.Property<Guid>("BookingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("AmountEur")
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("AmountEur");
+
+                            b1.Property<decimal>("AmountOriginal")
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("AmountOriginal");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("Currency");
+
+                            b1.Property<decimal>("ExchangeRate")
+                                .HasColumnType("numeric(18,8)")
+                                .HasColumnName("ExchangeRate");
+
+                            b1.Property<DateTime>("RateCapturedAtUtc")
+                                .HasColumnType("timestamptz")
+                                .HasColumnName("RateCapturedAtUtc");
+
+                            b1.Property<string>("RateProvider")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("character varying(50)")
+                                .HasColumnName("RateProvider");
+
+                            b1.HasKey("BookingId");
+
+                            b1.ToTable("Bookings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BookingId");
+                        });
+
+                    b.Navigation("Price");
                 });
 
             modelBuilder.Entity("BookingPlatformInsiders.Domain.Users.RefreshToken", b =>
