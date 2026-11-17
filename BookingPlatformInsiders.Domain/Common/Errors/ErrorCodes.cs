@@ -19,4 +19,9 @@ public static class ErrorCodes
     public const string RoomNotFound = "room.not_found";
     public const string BookingNotFound = "booking.not_found";
     public const string ConcurrencyConflict = "concurrency.conflict";
+
+    public const string UserEmailInvalid = "user.email_invalid";
+    public const string UserPasswordHashInvalid = "user.password_hash_invalid";
+    public const string UserRoleInvalid = "user.role_invalid";
+    public const string UserCreatedAtInvalid = "user.created_at_invalid";
 }
