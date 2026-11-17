@@ -46,6 +46,7 @@ public static class ErrorCodes
     public const string PaymentNotFound = "payment.not_found";
     public const string PaymentAttemptsExceeded = "payment.attempts_exceeded";
     public const string PaymentNotPending = "payment.not_pending";
+    public const string PaymentExpired = "payment.expired";
     public const string PaymentWebhookInvalid = "payment.invalid_webhook";
 
     public const string RatesUnavailable = "rates.unavailable";
