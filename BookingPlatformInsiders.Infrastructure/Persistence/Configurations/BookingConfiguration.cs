@@ -15,7 +15,7 @@ internal sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
             table.HasCheckConstraint("CK_Bookings_TimeRange", "\"EndUtc\" > \"StartUtc\"");
             table.HasCheckConstraint(
                 "CK_Bookings_Status",
-                $"\"Status\" IN ('{BookingStatus.Scheduled}', '{BookingStatus.Completed}', '{BookingStatus.Cancelled}')");
+                $"\"Status\" IN ('{BookingStatus.Scheduled}', '{BookingStatus.Completed}', '{BookingStatus.Cancelled}', '{BookingStatus.PendingPayment}', '{BookingStatus.PaymentFailed}', '{BookingStatus.Expired}')");
         });
 
         builder.HasKey(booking => booking.Id);

@@ -76,9 +76,82 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
 
                     b.ToTable("Bookings", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Bookings_Status", "\"Status\" IN ('Scheduled', 'Completed', 'Cancelled')");
+                            t.HasCheckConstraint("CK_Bookings_Status", "\"Status\" IN ('Scheduled', 'Completed', 'Cancelled', 'PendingPayment', 'PaymentFailed', 'Expired')");
 
                             t.HasCheckConstraint("CK_Bookings_TimeRange", "\"EndUtc\" > \"StartUtc\"");
+                        });
+                });
+
+            modelBuilder.Entity("BookingPlatformInsiders.Domain.Payments.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AttemptNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("BookingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("FailureReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ProviderPaymentId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Payments_BookingId_Initiated")
+                        .HasFilter("\"Status\" = 'Initiated'");
+
+                    b.HasIndex("IdempotencyKey")
+                        .IsUnique();
+
+                    b.HasIndex("BookingId", "AttemptNumber")
+                        .IsUnique();
+
+                    b.HasIndex("Provider", "ProviderPaymentId")
+                        .IsUnique()
+                        .HasFilter("\"ProviderPaymentId\" IS NOT NULL");
+
+                    b.HasIndex("Status", "CreatedAtUtc");
+
+                    b.ToTable("Payments", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Payments_AttemptNumber", "\"AttemptNumber\" >= 1");
+
+                            t.HasCheckConstraint("CK_Payments_Status", "\"Status\" IN ('Initiated', 'Succeeded', 'Failed', 'Expired')");
                         });
                 });
 
@@ -258,6 +331,15 @@ namespace BookingPlatformInsiders.Infrastructure.Migrations
                         });
 
                     b.Navigation("Price");
+                });
+
+            modelBuilder.Entity("BookingPlatformInsiders.Domain.Payments.Payment", b =>
+                {
+                    b.HasOne("BookingPlatformInsiders.Domain.Bookings.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BookingPlatformInsiders.Domain.Users.RefreshToken", b =>

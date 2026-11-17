@@ -1,6 +1,7 @@
 using BookingPlatformInsiders.Application.Common.Exceptions;
 using BookingPlatformInsiders.Application.Common.Persistence;
 using BookingPlatformInsiders.Domain.Bookings;
+using BookingPlatformInsiders.Domain.Payments;
 using BookingPlatformInsiders.Domain.Rooms;
 using BookingPlatformInsiders.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ internal sealed class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Booking> Bookings => Set<Booking>();
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Payment> Payments => Set<Payment>();
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
