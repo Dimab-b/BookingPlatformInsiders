@@ -1,13 +1,17 @@
+using BookingPlatformInsiders.Application.Auth.Abstractions;
 using BookingPlatformInsiders.Application.Bookings;
 using BookingPlatformInsiders.Application.Common.Data;
 using BookingPlatformInsiders.Application.Common.Persistence;
 using BookingPlatformInsiders.Application.Common.Time;
 using BookingPlatformInsiders.Application.Rooms;
+using BookingPlatformInsiders.Application.Users;
+using BookingPlatformInsiders.Infrastructure.Auth;
 using BookingPlatformInsiders.Infrastructure.Bookings;
 using BookingPlatformInsiders.Infrastructure.Bookings.Jobs;
 using BookingPlatformInsiders.Infrastructure.Common;
 using BookingPlatformInsiders.Infrastructure.Persistence;
 using BookingPlatformInsiders.Infrastructure.Rooms;
+using BookingPlatformInsiders.Infrastructure.Users;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +37,13 @@ public static class DependencyInjection
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IBookingQueries, BookingQueries>();
         services.AddSingleton<IClock, SystemClock>();
+
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasherAdapter>();
+        services.AddScoped<IAccessTokenService, JwtAccessTokenService>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
 
         services.AddHostedService<DatabaseInitializer>();
         services.AddHostedService<RoomSeeder>();
