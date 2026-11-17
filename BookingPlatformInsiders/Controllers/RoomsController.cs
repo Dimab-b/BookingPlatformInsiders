@@ -4,12 +4,14 @@ using BookingPlatformInsiders.Application.Common.Pagination;
 using BookingPlatformInsiders.Application.Rooms.Dtos;
 using BookingPlatformInsiders.Application.Rooms.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BookingPlatformInsiders.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/rooms")]
 public sealed class RoomsController : ControllerBase
 {

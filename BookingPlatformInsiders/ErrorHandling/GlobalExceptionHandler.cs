@@ -1,6 +1,8 @@
+using BookingPlatformInsiders.Application.Auth;
 using BookingPlatformInsiders.Application.Common.Exceptions;
 using BookingPlatformInsiders.Domain.Bookings;
 using BookingPlatformInsiders.Domain.Common.Exceptions;
+using BookingPlatformInsiders.Domain.Users;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -96,6 +98,16 @@ internal sealed class GlobalExceptionHandler : IExceptionHandler
                 (StatusCodes.Status409Conflict, domainException.Code, domainException.Message),
             BookingCannotCompleteException domainException =>
                 (StatusCodes.Status409Conflict, domainException.Code, domainException.Message),
+            BookingNotOwnedException useCaseException =>
+                (StatusCodes.Status403Forbidden, useCaseException.Code, useCaseException.Message),
+            EmailAlreadyTakenException useCaseException =>
+                (StatusCodes.Status409Conflict, useCaseException.Code, useCaseException.Message),
+            InvalidCredentialsException useCaseException =>
+                (StatusCodes.Status401Unauthorized, useCaseException.Code, useCaseException.Message),
+            InvalidRefreshTokenRequestException useCaseException =>
+                (StatusCodes.Status401Unauthorized, useCaseException.Code, useCaseException.Message),
+            RefreshTokenExpiredException domainException =>
+                (StatusCodes.Status401Unauthorized, domainException.Code, domainException.Message),
             BookingStartInPastException domainException =>
                 (StatusCodes.Status400BadRequest, domainException.Code, domainException.Message),
             DomainException domainException =>

@@ -1,11 +1,13 @@
 using BookingPlatformInsiders.Application.Bookings.Commands;
 using BookingPlatformInsiders.Application.Bookings.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingPlatformInsiders.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/bookings")]
 public sealed class BookingsController : ControllerBase
 {
