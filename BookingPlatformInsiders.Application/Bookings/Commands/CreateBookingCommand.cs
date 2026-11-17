@@ -1,4 +1,5 @@
 using BookingPlatformInsiders.Application.Bookings.Dtos;
+using BookingPlatformInsiders.Application.Common.Auth;
 using BookingPlatformInsiders.Application.Common.Exceptions;
 using BookingPlatformInsiders.Application.Common.Persistence;
 using BookingPlatformInsiders.Application.Common.Time;
@@ -21,17 +22,20 @@ public sealed class CreateBookingCommandHandler
     private readonly IRoomRepository _roomRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IClock _clock;
+    private readonly ICurrentUser _currentUser;
 
     public CreateBookingCommandHandler(
         IBookingRepository bookingRepository,
         IRoomRepository roomRepository,
         IUnitOfWork unitOfWork,
-        IClock clock)
+        IClock clock,
+        ICurrentUser currentUser)
     {
         _bookingRepository = bookingRepository;
         _roomRepository = roomRepository;
         _unitOfWork = unitOfWork;
         _clock = clock;
+        _currentUser = currentUser;
     }
 
     public async Task<BookingDto> Handle(
@@ -60,6 +64,7 @@ public sealed class CreateBookingCommandHandler
             Booking.EnsureNoOverlap(candidates, command.RoomId, startUtc, endUtc);
 
             var created = Booking.Create(
+                _currentUser.UserId,
                 command.RoomId,
                 new BookingTitle(command.Title),
                 startUtc,
@@ -75,12 +80,13 @@ public sealed class CreateBookingCommandHandler
         return Map(booking);
     }
 
-    private static BookingDto Map(Booking booking) =>
+    private BookingDto Map(Booking booking) =>
         new(
             booking.Id,
             booking.RoomId,
             booking.Title.Value,
             booking.StartUtc,
             booking.EndUtc,
-            booking.Status.ToString());
+            booking.Status.ToString(),
+            booking.OwnerId == _currentUser.UserId);
 }

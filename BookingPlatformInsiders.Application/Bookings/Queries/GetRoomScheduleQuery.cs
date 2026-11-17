@@ -1,5 +1,6 @@
 using BookingPlatformInsiders.Application.Bookings;
 using BookingPlatformInsiders.Application.Bookings.Dtos;
+using BookingPlatformInsiders.Application.Common.Auth;
 using BookingPlatformInsiders.Application.Common.Exceptions;
 using BookingPlatformInsiders.Application.Common.Pagination;
 using BookingPlatformInsiders.Application.Rooms;
@@ -18,13 +19,16 @@ public sealed class GetRoomScheduleQueryHandler
 {
     private readonly IBookingQueries _bookingQueries;
     private readonly IRoomRepository _roomRepository;
+    private readonly ICurrentUser _currentUser;
 
     public GetRoomScheduleQueryHandler(
         IBookingQueries bookingQueries,
-        IRoomRepository roomRepository)
+        IRoomRepository roomRepository,
+        ICurrentUser currentUser)
     {
         _bookingQueries = bookingQueries;
         _roomRepository = roomRepository;
+        _currentUser = currentUser;
     }
 
     public async Task<PagedResult<BookingDto>> Handle(
@@ -45,6 +49,7 @@ public sealed class GetRoomScheduleQueryHandler
 
         var (items, totalCount) = await _bookingQueries.GetSchedulePageAsync(
             query.RoomId,
+            _currentUser.UserId,
             dayStartUtc,
             dayEndUtc,
             offset,

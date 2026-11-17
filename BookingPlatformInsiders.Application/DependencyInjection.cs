@@ -1,4 +1,5 @@
 using System.Reflection;
+using BookingPlatformInsiders.Application.Auth.Abstractions;
 using BookingPlatformInsiders.Application.Common.Behaviors;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,9 @@ public static class DependencyInjection
         });
 
         services.AddValidatorsFromAssembly(assembly);
+
+        services.AddOptions<JwtOptions>();
+        services.AddScoped<IAuthTokenIssuer, AuthTokenIssuer>();
 
         return services;
     }
