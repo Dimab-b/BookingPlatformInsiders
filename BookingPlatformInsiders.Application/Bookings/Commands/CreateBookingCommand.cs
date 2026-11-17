@@ -88,5 +88,9 @@ public sealed class CreateBookingCommandHandler
             booking.StartUtc,
             booking.EndUtc,
             booking.Status.ToString(),
-            booking.OwnerId == _currentUser.UserId);
+            booking.OwnerId == _currentUser.UserId,
+            booking.Price?.AmountOriginal,
+            booking.Price?.Currency,
+            booking.Price?.AmountEur,
+            booking.PaymentExpiresAtUtc);
 }
